@@ -1,0 +1,21 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'insighta'
+version = '1.0.0'
+description = 'Insighta Labs CLI - Profile Intelligence Tool'
+requires-python = '>=3.8'
+dependencies = [
+    'click',
+    'requests',
+    'rich'
+]
+
+[project.scripts]
+insighta = 'insighta.main:cli'
+
+[tool.qui.packages.find]
+where = ["."]
+include = ['insighta']

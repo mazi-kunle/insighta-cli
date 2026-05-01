@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: insighta
+Version: 1.0.0
+Summary: Insighta Labs CLI - Profile Intelligence Tool
+Requires-Python: >=3.8
+Requires-Dist: click
+Requires-Dist: requests
+Requires-Dist: rich

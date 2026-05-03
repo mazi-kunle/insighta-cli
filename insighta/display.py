@@ -148,7 +148,7 @@ def print_user_info(user: dict):
     table.add_column("Field", style="bold cyan", width=15)
     table.add_column("Value", style="white")
 
-    table.add_row("Username", f"@{user.get('username', '')}")
+    table.add_row("Username", f"{user.get('username', '')}")
     table.add_row("Email", user.get("email", ""))
     table.add_row("Role", user.get("role", ""))
     table.add_row("Last Login", user.get("last_login_at", ""))

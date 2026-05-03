@@ -1,5 +1,5 @@
 import click
-from insighta.auth import auth_commands
+from insighta.auth import login, logout, whoami
 from insighta.profiles import profiles_commands
 
 
@@ -12,7 +12,11 @@ def cli():
 
 
 # Register command groups
-cli.add_command(auth_commands)
+cli.add_command(login)
+cli.add_command(logout)
+cli.add_command(whoami)
+
+
 cli.add_command(profiles_commands)
 
 

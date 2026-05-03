@@ -73,13 +73,7 @@ class CallbackHandler(BaseHTTPRequestHandler):
 
 # ─── AUTH COMMANDS ────────────────────────────────────────────────────────────
 
-@click.group(name="auth")
-def auth_commands():
-    """Authentication commands."""
-    pass
-
-
-@auth_commands.command(name="login")
+@click.command(name="login")
 def login():
     """Login with GitHub."""
 
@@ -87,7 +81,7 @@ def login():
     if is_logged_in():
         credentials = load_credentials()
         print_info(f"Already logged in as @{credentials['username']}")
-        print_info("Run 'insighta auth logout' to logout first.")
+        print_info("Run 'insighta logout' to logout first.")
         return
 
     # Generate PKCE values
@@ -111,7 +105,7 @@ def login():
 
     # Check we got the code back
     code = CallbackHandler.code
-    print(code)
+
     if not code:
         print_error("Login failed. No code received from GitHub.")
         return
@@ -149,10 +143,10 @@ def login():
         last_login_at = user.get('last_login_at')
     )
 
-    print_success(f"Logged in as @{user['username']}")
+    print_success(f"Logged in as {user['username']}")
 
 
-@auth_commands.command(name="logout")
+@click.command(name="logout")
 def logout():
     """Logout and invalidate tokens."""
 
@@ -174,18 +168,38 @@ def logout():
     print_success("Logged out successfully.")
 
 
-@auth_commands.command(name="whoami")
+@click.command(name="whoami")
 def whoami():
-    """Show current logged in user."""
-
+    '''
+    Check current user
+    '''
     if not is_logged_in():
-        print_error("You are not logged in. Run 'insighta auth login'")
+        print_error("You are not logged in. Run 'insighta login'")
         return
 
-    credentials = load_credentials()
+    with Loader("Fetching user info..."):
+        response = make_request("GET", "/api/whoami")
+
+    # print(f"Response status: {response.status_code}")  # add this
+    if not response:
+        return
+
+    if response.status_code == 401:
+        print_error('from whoami')
+        print_error("Session expired. Please run: insighta login")
+        delete_credentials()
+        return
+
+    if response.status_code != 200:
+        data = response.json()
+        print_error(data.get("message", "Failed to fetch user info"))
+        return
+
+    data = response.json()
+    user = data.get("data", {})
     print_user_info({
-        "username": credentials.get("username"),
-        "email": credentials.get("email"),
-        "role": credentials.get('role'),
-        'last_login_at': credentials.get('last_login_at')
+        "username": user.get("username"),
+        "email": user.get("email"),
+        "role": user.get("role"),
+        "last_login_at": user.get("last_login_at")
     })

@@ -163,12 +163,16 @@ def create_profile(name):
     with Loader(f"Creating profile for {name}..."):
         response = make_request("POST", "/api/profiles", json={"name": name})
 
-    if not response:
-        return
 
     if response.status_code == 403:
         print_error("Access denied. Only admins can create profiles.")
         return
+    
+    if not response:
+        print_error("Session expired. Please run: insighta login")
+        return
+
+
 
     if response.status_code not in [200, 201]:
         data = response.json()

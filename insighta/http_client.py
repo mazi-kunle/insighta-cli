@@ -3,7 +3,7 @@ import click
 from insighta.credentials import *
 
 
-BASE_URL = 'http://localhost:5000'
+BASE_URL = 'https://hng14-production-81d0.up.railway.app'
 
 
 def get_headers():
